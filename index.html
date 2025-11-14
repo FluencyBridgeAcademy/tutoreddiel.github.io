@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Pronunciación</title>
+    <link rel="shortcut icon" href="./Digital%20Course1.svg" type="image/svg+xml"> 
+    <!-- Cargamos Tailwind CSS para un diseño moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Estilo para el fondo con la imagen */
+            background-image: url('https://i.ibb.co/DDrQjF90/tpk.jpg'); /* URL de tu imagen */
+            background-size: cover; /* Cubre todo el área */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll */
+        }
+        
+        /* Estilo para el contenedor de resultados */
+        #result-container {
+            transition: all 0.3s ease-in-out;
+            background-color: transparent; /* Fondo transparente */
+            border: none; /* Quitamos el borde */
+        }
+
+        /* --- INICIO: Estilos para el botón flotante de WhatsApp --- */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px; /* Tamaño del icono */
+            height: 60px; /* Tamaño del icono */
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366; /* Color de fondo de WhatsApp */
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 16px; /* Ajustado para el texto */
+            box-shadow: 2px 2px 3px #999;
+            z-index: 1000;
+            display: flex; /* Para alinear el icono y el texto */
+            align-items: center; /* Centrar verticalmente */
+            justify-content: flex-start; /* Alinear contenido al inicio */
+            padding: 10px; /* Espacio interno */
+            overflow: hidden; /* Ocultar el texto por defecto */
+            transition: all 0.3s ease-in-out; /* Transición suave */
+            text-decoration: none; /* Eliminar subrayado */
+        }
+
+        .whatsapp-float:hover {
+            width: 280px; /* Ancho expandido al pasar el ratón */
+            border-radius: 30px; /* Borde menos redondo al expandir */
+        }
+
+        .whatsapp-icon {
+            width: 40px; /* Tamaño del icono dentro del botón */
+            height: 40px; /* Tamaño del icono dentro del botón */
+            flex-shrink: 0; /* Evita que el icono se encoja */
+        }
+
+        .whatsapp-text {
+            color: #FFF; /* Color del texto */
+            white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+            margin-left: 10px; /* Espacio entre el icono y el texto */
+            opacity: 0; /* Oculto por defecto */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .whatsapp-float:hover .whatsapp-text {
+            opacity: 1; /* Mostrar texto al pasar el ratón */
+        }
+
+        /* Opcional: Ajustar el tamaño del icono en pantallas pequeñas */
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                bottom: 15px;
+                right: 15px;
+            }
+            .whatsapp-float:hover {
+                width: 250px; /* Ancho un poco menor para móviles */
+            }
+            .whatsapp-icon {
+                width: 30px;
+                height: 30px;
+            }
+            .whatsapp-text {
+                font-size: 14px;
+            }
+        }
+        /* --- FIN: Estilos para el botón flotante de WhatsApp --- */
+
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <!-- Contenido principal centrado -->
+    <main class="flex-grow flex items-center justify-center p-4">
+        
+        <!-- MEJORA: Se cambió 'bg-white' por 'bg-white/80 backdrop-blur-sm' 
+             para que la tarjeta principal tenga el mismo efecto translúcido del footer 
+             y se integre mejor con la imagen de fondo. -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-md">
+            
+            <!-- Título y Descripción -->
+            <div class="text-center mb-6">
+                <h1 class="text-3xl font-bold text-indigo-600">Guía Fonética</h1>
+                <p class="text-gray-600 mt-2">Inglés con sonidos del Español</p>
+            </div>
+
+            <!-- Input para la palabra -->
+            <div class="mb-4">
+                <label for="english-word" class="block text-sm font-medium text-gray-700 mb-2">Escribe una palabra o frase en inglés:</label>
+                <input type="text" id="english-word" placeholder="Ej: Hello, How are you?..."
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg">
+            </div>
+
+            <!-- Botón de Traducción -->
+            <button id="translate-button"
+                    class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200">
+                Mostrar Pronunciación
+            </button>
+
+            <!-- Contenedor del Resultado -->
+            <div id="result-container" class="mt-6 p-5 min-h-[80px] rounded-lg text-center flex items-center justify-center opacity-0 scale-95">
+                <!-- El JS se encarga de cambiar el color y contenido de este texto -->
+                <p id="result-text" class="text-2xl font-semibold text-indigo-800"></p>
+            </div>
+            
+            <!-- Lista de palabras de ejemplo -->
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-500">Intenta con: <span class="font-medium text-gray-600">hello, how are you?, where is the bathroom?, work</span></p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Nuevo Pie de Página con Biografía del Autor -->
+    <footer class="w-full bg-white bg-opacity-80 backdrop-blur-sm p-6 shadow-lg mt-auto">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-6">
+            
+            <!-- Foto del Autor -->
+            <div class="flex-shrink-0">
+                <!-- MEJORA: Añadido 'onerror' como fallback por si la imagen no carga -->
+                <img src="https://i.ibb.co/PZ2DnT7D/eddiel-martin.jpg" alt="Eddiel Martin"
+                     class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-indigo-200 object-cover shadow-md"
+                     onerror="this.src='https://placehold.co/160x160/6366f1/ffffff?text=Eddiel'">
+            </div>
+
+            <!-- Biografía -->
+            <div class="flex-1 text-center md:text-left">
+                <h3 class="text-2xl font-bold text-indigo-700 mb-2">Sobre el Autor</h3>
+                <p class="text-gray-800 text-sm md:text-base">
+                    ¡Hola! Soy Eddiel Martin, y a mis 32 años, he dedicado más de una década a transformar ideas en realidades digitales. Con 11 años de experiencia como programador y diseñador web, no solo construyo sitios funcionales y estéticamente atractivos, sino que también me aseguro de que tu mensaje llegue a una audiencia global como tutor de inglés y traductor. ¿Necesitas una presencia online que no solo sea impactante, sino que también comunique eficazmente en cualquier idioma? Con mi combinación única de habilidades técnicas y lingüísticas, estoy listo para llevar tu proyecto al siguiente nivel.
+                <!-- CORRECCIÓN: Se cambió la etiqueta de cierre </T> por </p> -->
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- --- INICIO: Botón flotante de WhatsApp --- -->
+    <a href="http://wa.me/51936932398" class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+        <!-- MEJORA: Añadido 'onerror' como fallback por si la imagen no carga -->
+        <img src="https://i.ibb.co/FbydYWrR/transparente-wsp.png" alt="WhatsApp" class="whatsapp-icon"
+             onerror="this.src='https://placehold.co/40x40/25d366/ffffff?text=W'">
+        <span class="whatsapp-text">Practica tu inglés con Eddiel</span>
+    </a>
+    <!-- --- FIN: Botón flotante de WhatsApp --- -->
+
+
+    <script>
+    // Envolvemos todo el script en 'DOMContentLoaded'
+    // Esto asegura que el script solo se ejecute una vez que todo el HTML esté cargado
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Obtenemos los elementos del DOM
+        const translateButton = document.getElementById('translate-button');
+        const englishWordInput = document.getElementById('english-word');
+        const resultContainer = document.getElementById('result-container');
+        const resultText = document.getElementById('result-text');
+
+        // Verificación de que los elementos existen (buena práctica)
+        if (!translateButton || !englishWordInput || !resultContainer || !resultText) {
+            console.error("Error: No se pudieron encontrar los elementos necesarios del DOM.");
+            return; // Detenemos la ejecución si los elementos no están
+        }
+
+        // --- INICIO DE LA LÓGICA DE IA ---
+
+        // 1. Instrucciones para el modelo de IA
+        const systemPrompt = `Eres un experto en fonética inglesa para hablantes de español.
+Tu única tarea es tomar el texto en inglés que te da el usuario y convertirlo a una pronunciación aproximada usando *solamente* letras y sílabas del español.
+
+Reglas estrictas:
+1.  **NO TRADUZCAS** el significado. Solo transcribe el sonido.
+2.  Usa 'j' para la 'h' aspirada (ej: hello -> jelou).
+3.  Usa 'u' o 'ua' para el sonido 'w' (ej: water -> ua-ter).
+4.  **Usa 'z' (como en "zapato" de España) para el sonido 'th' sordo (como en "think", "thank you"). Ej: think -> zink, thank you -> zenk iu.**
+5.  **Usa 'd' para el sonido 'th' sonoro (como en "the", "this", "that"). Ej: the -> da, this -> dis.**
+6.  Usa 'sh' para el sonido de 'sh' (ej: show -> shou).
+7.  Escribe la pronunciación como palabras continuas, sin guiones (ej: computer -> compiuter).
+8.  Responde *únicamente* con la transcripción fonética. No añadas "Aquí está la pronunciación:" ni nada más.
+
+Ejemplo de entrada: "I don't understand"
+Tu respuesta: "Ai dont onderstand"`;
+
+        const apiKey = ""; // Dejar vacío, se gestionará automáticamente
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        // 2. Función de reintento para la API (con backoff exponencial)
+        async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    // No reintentar en errores 4xx (excepto 429), pero sí en 5xx o 429
+                    if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+                         throw new Error(`Error del cliente: ${response.status}`);
+                    }
+                } catch (error) {
+                    // No registrar reintentos en la consola
+                    if (i === retries - 1) {
+                        console.error("Error final de API:", error);
+                        throw error; // Lanzar error en el último intento
+                    }
+                }
+                // Esperar antes de reintentar
+                await new Promise(res => setTimeout(res, delay * Math.pow(2, i)));
+            }
+        }
+
+        // 3. Función para llamar a la IA
+        async function getAiPronunciation(text) {
+            const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            };
+
+            const result = await fetchWithRetry(apiUrl, options);
+            const candidate = result.candidates?.[0];
+
+            if (candidate && candidate.content?.parts?.[0]?.text) {
+                // Devolvemos el texto, limpiando comillas si la IA las añade
+                return candidate.content.parts[0].text.trim().replace(/^"|"$/g, '');
+            } else {
+                console.warn("Respuesta inesperada de la IA:", result);
+                throw new Error("Respuesta de la IA no válida o vacía.");
+            }
+        }
+
+        // 4. Función principal (sin cambios, ya era muy sólida)
+        async function getPhoneticSpelling() {
+            const word = englishWordInput.value.trim();
+            
+            if (word === "") {
+                resultText.textContent = "Escribe algo";
+                resultText.className = "text-xl font-semibold text-red-600";
+                resultContainer.classList.remove('opacity-0', 'scale-95');
+                resultContainer.classList.add('opacity-100', 'scale-100');
+                return;
+            }
+
+            // Poner la UI en modo "cargando"
+            translateButton.disabled = true;
+            translateButton.textContent = "Generando...";
+            translateButton.classList.add('opacity-75', 'cursor-not-allowed');
+            resultText.textContent = "Pensando...";
+            resultText.className = "text-xl font-semibold text-gray-500 animate-pulse";
+            resultContainer.classList.remove('opacity-0', 'scale-95');
+            resultContainer.classList.add('opacity-100', 'scale-100');
+
+            try {
+                // Llamar a la IA
+                const result = await getAiPronunciation(word);
+                
+                // Mostrar resultado exitoso
+                resultText.textContent = result;
+                // El JS sobreescribe la clase, así que nos aseguramos de que sea legible
+                resultText.className = "text-2xl font-bold text-gray-900"; 
+                resultText.classList.remove('animate-pulse');
+
+            } catch (error) {
+                console.error("Error al obtener la pronunciación:", error);
+                // Mostrar error
+                resultText.textContent = "Error al conectar con la IA.";
+                resultText.className = "text-xl font-semibold text-red-600";
+                resultText.classList.remove('animate-pulse');
+            } finally {
+                // Restaurar la UI
+                translateButton.disabled = false;
+                translateButton.textContent = "Mostrar Pronunciación";
+                translateButton.classList.remove('opacity-75', 'cursor-not-allowed');
+            }
+        }
+
+        // Asignamos el evento al botón
+        translateButton.addEventListener('click', getPhoneticSpelling);
+
+        // También permitimos presionar "Enter" en el campo de texto
+        englishWordInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                getPhoneticSpelling();
+            }
+        });
+
+    }); // Cerramos el 'DOMContentLoaded'
+    </script>
+
+</body>
+</html>
